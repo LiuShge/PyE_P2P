@@ -1,0 +1,12 @@
+{
+    "ipify_json": "https://api.ipify.org?format=json",
+    "ipify_text": "https://api.ipify.org",
+    "ifconfig": "https://ifconfig.me/ip",
+    "icanhazip": "https://icanhazip.com/",
+    "identme": "https://ident.me/",
+    "checkip": "https://checkip.amazonaws.com/",
+    "api64": "https://api64.ipify.org?format=json",
+    "api64_text": "https://api64.ipify.org",
+    "ipinfo": "https://ipinfo.io/ip",
+    "myexternalip": "https://myexternalip.com/raw"
+}
