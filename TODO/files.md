@@ -1,4 +1,4 @@
-### 当前目录（2026-04-11）
+### 当前目录（2026-04-14）
 ```text
 PyE_P2P/
 ├─ net_core/
@@ -9,7 +9,7 @@ PyE_P2P/
 │  │  ├─ acquirer.py
 │  │  └─ provider.json
 │  ├─ explorer_core/            # 文件/目录工具
-│  │  └─ file_searcher.py
+│  │  └─ file_manager.py
 │  └─ terminal_panel/           # 桌面终端面板
 │     └─ manager.py
 ├─ TODO/

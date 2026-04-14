@@ -27,8 +27,8 @@
 
 当前仓库仍处于探索阶段，已经有一些后续将被接入全栈的独立工具：
 
-- `tools/ip_acquirer`：从多个提供商获取公网 IP，带简单重试与校验。
-- `tools/explorer_core`：读取、写入、列举文件/目录的小工具，可选 base64。
+- `tools/ip_acquirer`：从多个提供商获取公网 IP，带简单重试、校验和静默的最快 provider 缓存。
+- `tools/explorer_core`：文件与目录管理工具，可读取、写入、列举和搜索，支持可选 base64。
 - `tools/terminal_panel`：仅桌面可用的终端面板引导程序。
 - `net_core/handshake/token.py`：握手令牌层的设计草稿。
 
@@ -43,7 +43,7 @@ PyE_P2P/
 │  │  ├─ acquirer.py
 │  │  └─ provider.json
 │  ├─ explorer_core/                  # 文件/目录工具
-│  │  └─ file_searcher.py
+│  │  └─ file_manager.py
 │  └─ terminal_panel/                 # 桌面终端面板引导
 │     └─ manager.py
 └─ TODO/                              # 布局与目标说明
@@ -53,8 +53,8 @@ PyE_P2P/
 
 ## 可用的小工具用法
 
-- 公网 IP：`python tools/ip_acquirer/acquirer.py` 会调用多个提供商并输出公网 IP。
-- 文件工具：`from tools.explorer_core.file_searcher import Explorer` 可进行文件/目录读写与管理。
+- 公网 IP：`python tools/ip_acquirer/acquirer.py` 会调用多个提供商并输出公网 IP 及来源；provider 文件会缓存 hash 和最快的 60% provider。
+- 文件工具：`from tools.explorer_core.file_manager import FileManager` 可进行文件/目录读写与管理。
 - 终端面板：桌面平台工具，启动方式见 `tools/terminal_panel/manager.py` 的文档字符串。
 
 ## 设计目标

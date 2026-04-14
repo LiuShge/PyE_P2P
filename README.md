@@ -27,8 +27,8 @@ Its core goal is simple:
 
 Current repository contents are still exploratory. The codebase already contains a few focused utilities that will later plug into the full stack:
 
-- `tools/ip_acquirer`: fetch public IP from multiple providers with simple retries and validation.
-- `tools/explorer_core`: small file/folder helper for reading, writing, and listing with optional base64 encoding.
+- `tools/ip_acquirer`: fetch public IP from multiple providers with simple retries, validation, and silent fastest-provider caching.
+- `tools/explorer_core`: file and directory manager for reading, writing, listing, and searching with optional base64 encoding.
 - `tools/terminal_panel`: desktop-only helper to bootstrap a terminal panel process.
 - `net_core/handshake/token.py`: design notes for the handshake token layer.
 
@@ -42,8 +42,8 @@ PyE_P2P/
 │  ├─ ip_acquirer/                    # public IP fetcher + providers list
 │  │  ├─ acquirer.py
 │  │  └─ provider.json
-│  ├─ explorer_core/                  # file/folder utilities
-│  │  └─ file_searcher.py
+│  ├─ explorer_core/                  # file/directory utilities
+│  │  └─ file_manager.py
 │  └─ terminal_panel/                 # desktop terminal panel bootstrap
 │     └─ manager.py
 └─ TODO/                              # docs for layout and purpose
@@ -53,8 +53,8 @@ PyE_P2P/
 
 ## Quick Usage (utilities available today)
 
-- Public IP: `python tools/ip_acquirer/acquirer.py` prints the detected public IP using multiple providers.
-- File helper: `from tools.explorer_core.file_searcher import Explorer` to read/write/manage files and folders.
+- Public IP: `python tools/ip_acquirer/acquirer.py` prints the detected public IP and provider source; the provider file caches a hash and the fastest 60% of providers.
+- File helper: `from tools.explorer_core.file_manager import FileManager` to read/write/manage files and folders.
 - Terminal panel: desktop-only helper; see docstrings in `tools/terminal_panel/manager.py` for launching a panel process.
 
 ## Design Goals

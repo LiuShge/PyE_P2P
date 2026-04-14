@@ -1,12 +1,27 @@
 {
-    "ipify_json": "https://api.ipify.org?format=json",
-    "ipify_text": "https://api.ipify.org",
-    "ifconfig": "https://ifconfig.me/ip",
-    "icanhazip": "https://icanhazip.com/",
-    "identme": "https://ident.me/",
-    "checkip": "https://checkip.amazonaws.com/",
-    "api64": "https://api64.ipify.org?format=json",
-    "api64_text": "https://api64.ipify.org",
-    "ipinfo": "https://ipinfo.io/ip",
-    "myexternalip": "https://myexternalip.com/raw"
+    "meta": {
+        "schema_version": 1,
+        "provider_hash": "1112eb14908893481860e268ac6bc613041a575e711f8f6d330e68052ad44a94",
+        "fastest_ratio": 0.6,
+        "fastest_urls": [
+            "https://checkip.amazonaws.com/",
+            "https://ipinfo.io/ip",
+            "https://api64.ipify.org?format=json",
+            "https://myexternalip.com/raw",
+            "https://icanhazip.com/",
+            "https://ifconfig.me/ip"
+        ]
+    }, 
+    "providers": {
+        "ipify_json": "https://api.ipify.org?format=json",
+        "ipify_text": "https://api.ipify.org",
+        "ifconfig": "https://ifconfig.me/ip",
+        "icanhazip": "https://icanhazip.com/",
+        "identme": "https://ident.me/",
+        "checkip": "https://checkip.amazonaws.com/",
+        "api64": "https://api64.ipify.org?format=json",
+        "api64_text": "https://api64.ipify.org",
+        "ipinfo": "https://ipinfo.io/ip",
+        "myexternalip": "https://myexternalip.com/raw"
+    }
 }

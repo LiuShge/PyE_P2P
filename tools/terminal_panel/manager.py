@@ -562,7 +562,8 @@ class DisplayInterface:
             self._process = process
             return
         except Exception:
-            pass
+            if self._bootstrap_script is None:
+                raise RuntimeError("unable to create panel bootstrap script")
 
         candidates = _terminal_launcher_candidates(self._bootstrap_script)
         for launcher_name, launcher_command in candidates:
