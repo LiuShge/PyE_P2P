@@ -731,23 +731,13 @@ def _panel_worker_main() -> int:
             sys.stderr.write(text)
             sys.stderr.flush()
 
-    def _drain_stream(stream: Any):
+    def _relay_stream(stream: Any, writer: Any | None = None):
         try:
             for chunk in iter(stream.readline, ""):
                 if stop_event.is_set():
                     break
-        finally:
-            try:
-                stream.close()
-            except OSError:
-                pass
-
-    def _relay_stream(stream: Any, writer: Any):
-        try:
-            for chunk in iter(stream.readline, ""):
-                if stop_event.is_set():
-                    break
-                writer(chunk)
+                if writer is not None:
+                    writer(chunk)
         finally:
             try:
                 stream.close()
@@ -802,8 +792,8 @@ def _panel_worker_main() -> int:
         threads.append(threading.Thread(target=_relay_stream, args=(child.stdout, _write_stdout), daemon=True))
         threads.append(threading.Thread(target=_relay_stream, args=(child.stderr, _write_stderr), daemon=True))
     else:
-        threads.append(threading.Thread(target=_drain_stream, args=(child.stdout,), daemon=True))
-        threads.append(threading.Thread(target=_drain_stream, args=(child.stderr,), daemon=True))
+        threads.append(threading.Thread(target=_relay_stream, args=(child.stdout,), daemon=True))
+        threads.append(threading.Thread(target=_relay_stream, args=(child.stderr,), daemon=True))
 
     for thread in threads:
         thread.start()

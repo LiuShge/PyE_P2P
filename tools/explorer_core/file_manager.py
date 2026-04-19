@@ -1,5 +1,15 @@
 from __future__ import annotations
 
+__all__ = [
+    "FileManagerError",
+    "DirectoryNotFoundError",
+    "DirectoryCreationError",
+    "FileCreationError",
+    "FileHandle",
+    "DirectoryHandle",
+    "FileManager",
+]
+
 import base64
 from collections import deque
 from pathlib import Path
@@ -82,7 +92,7 @@ class DirectoryHandle:
         self.path = Path(directory_path)
         if not self.path.is_dir():
             raise DirectoryNotFoundError(self.path)
-        self.entries = self.list_entries()
+        self._refresh_entries()
 
     def _refresh_entries(self) -> None:
         try:

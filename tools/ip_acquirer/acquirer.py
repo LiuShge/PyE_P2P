@@ -4,6 +4,20 @@ Public IP acquisition utilities.
 
 from __future__ import annotations
 
+__all__ = [
+    "PublicIPError",
+    "ProviderConfigError",
+    "ProviderRequestError",
+    "PublicIPResolutionError",
+    "ProviderAttempt",
+    "PublicIPResult",
+    "ProviderConfig",
+    "decode_json_payload",
+    "load_public_ip_providers",
+    "get_public_ip",
+    "get_public_ip_from_config",
+]
+
 import hashlib
 import ipaddress
 import json
@@ -340,6 +354,27 @@ def _select_fastest_urls(attempts: Iterable[ProviderAttempt], total_provider_cou
     return [url for url, _ in ranked_urls[:fastest_target]]
 
 
+def _load_config_and_decide() -> tuple[ProviderConfig, list[str], bool]:
+    """Load config and determine whether to use all providers or cached ones.
+
+    Returns: (config, urls_to_use, providers_changed)
+    """
+    with _CONFIG_LOCK:
+        config = _load_provider_config()
+        current_hash = config.provider_hash
+        cached_urls = [url for url in config.fastest_urls if url]
+
+        document = _load_provider_document()
+        _, meta = _extract_provider_config(document)
+        cached_hash = str(meta.get("provider_hash", "")).strip()
+
+        providers_changed = cached_hash != current_hash or not cached_urls
+
+        if providers_changed:
+            return config, config.as_url_list(), True
+        return config, cached_urls, False
+
+
 def get_public_ip_from_config(
     *,
     times_of_retries: int = 3,
@@ -351,43 +386,35 @@ def get_public_ip_from_config(
     The first time, or whenever provider.json changes, all providers are used.
     The fastest 60% of the successful providers are cached back into provider.json.
     """
-    with _CONFIG_LOCK:
-        config = _load_provider_config()
-        current_hash = config.provider_hash
-        cached_hash = ""
-        cached_urls = [url for url in config.fastest_urls if url]
+    config, urls, providers_changed = _load_config_and_decide()
 
-        document = _load_provider_document()
-        _, meta = _extract_provider_config(document)
-        cached_hash = str(meta.get("provider_hash", "")).strip()
-
-        providers_changed = cached_hash != current_hash or not cached_urls
-
-        if providers_changed:
-            result = get_public_ip(
-                config.as_url_list(),
-                times_of_retries=times_of_retries,
-                timeout=timeout,
-            )
-            fastest_urls = _select_fastest_urls(result.attempts, len(config.providers))
+    if providers_changed:
+        result = get_public_ip(
+            urls,
+            times_of_retries=times_of_retries,
+            timeout=timeout,
+        )
+        fastest_urls = _select_fastest_urls(result.attempts, len(config.providers))
+        with _CONFIG_LOCK:
             _write_provider_config(list(config.providers), fastest_urls)
-            return result
+        return result
 
-        try:
-            return get_public_ip(
-                cached_urls,
-                times_of_retries=times_of_retries,
-                timeout=timeout,
-            )
-        except PublicIPResolutionError:
-            result = get_public_ip(
-                config.as_url_list(),
-                times_of_retries=times_of_retries,
-                timeout=timeout,
-            )
-            fastest_urls = _select_fastest_urls(result.attempts, len(config.providers))
+    try:
+        return get_public_ip(
+            urls,
+            times_of_retries=times_of_retries,
+            timeout=timeout,
+        )
+    except PublicIPResolutionError:
+        result = get_public_ip(
+            config.as_url_list(),
+            times_of_retries=times_of_retries,
+            timeout=timeout,
+        )
+        fastest_urls = _select_fastest_urls(result.attempts, len(config.providers))
+        with _CONFIG_LOCK:
             _write_provider_config(list(config.providers), fastest_urls)
-            return result
+        return result
 
 
 if __name__ == "__main__":
